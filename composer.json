@@ -1,0 +1,22 @@
+{
+    "name": "raphaelvilela/crud-rails",
+    "description": "Rails to create super fast CRUDs.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Raphael Vilela",
+            "email": "raphaelvilela@gmail.com"
+        }
+    ],
+    "require": {
+        "laravel/framework": "5.5.*"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "RaphaelVilela\\CrudRails\\Providers\\CrudRailsServiceProvider"
+            ]
+        }
+    }
+}
