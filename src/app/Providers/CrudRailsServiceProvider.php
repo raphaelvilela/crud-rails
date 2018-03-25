@@ -13,10 +13,12 @@ class CrudRailsServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadViewsFrom(__DIR__.'/../../views', 'crud-rails');
+        $this->loadViewsFrom(__DIR__.'/../../resources/views', 'crud-rails');
+
+        $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
 
         $this->publishes([
-            __DIR__.'/../../views' => base_path('resources/views/raphaelvilela/crud-rails'),
+            __DIR__.'/../../resources/views' => base_path('resources/views/raphaelvilela/crud-rails'),
         ]);
     }
 
@@ -28,6 +30,6 @@ class CrudRailsServiceProvider extends ServiceProvider
     public function register()
     {
         include __DIR__.'/../../routes/web.php';
-        $this->app->make('RaphaelVilela\CrudRails\Controllers\ModelController');
+        $this->app->make('RaphaelVilela\CrudRails\App\Controllers\ModelController');
     }
 }

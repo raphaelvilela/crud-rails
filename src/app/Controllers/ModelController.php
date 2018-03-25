@@ -13,7 +13,7 @@ abstract class ModelController extends Controller
 
     var $model;
     var $model_code;
-    var $can_upload_file;
+    var $can_upload_photo;
     var $response_type;
     var $model_views_path;
 
@@ -30,7 +30,7 @@ abstract class ModelController extends Controller
         $this->middleware('auth');
         $this->model = new $resouceClass;
         $this->model_code = $this->extractCode($resouceClass);
-        $this->can_upload_file = $canUploadFile;
+        $this->can_upload_photo = $canUploadFile;
         $this->response_type = self::$VIEW_RESPONSE_TYPE;
         $this->model_views_path = 'adm.resources.' . $this->model_code;
     }
@@ -147,7 +147,7 @@ abstract class ModelController extends Controller
         }
 
         //Modelo pode receber arquivos?
-        if ($this->can_upload_file) {
+        if ($this->can_upload_photo) {
 
             //Foi enviado uma nova foto válida?
             if ($request->hasFile('photo') && $request->file('photo')->isValid()) {
