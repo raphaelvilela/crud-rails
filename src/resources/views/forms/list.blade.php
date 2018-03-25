@@ -1,4 +1,4 @@
-@extends('adm.themes.' . config("ui.admin.theme") . '.layout')
+@extends(config("crud-rails.forms.page-layout"))
 
 @section('content')
 

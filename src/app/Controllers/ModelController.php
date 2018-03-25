@@ -3,8 +3,8 @@
 namespace RaphaelVilela\CrudRails\App\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\PhotoRepository;
 use Illuminate\Http\Request;
+use RaphaelVilela\CrudRails\App\Repositories\PhotoRepository;
 
 abstract class ModelController extends Controller
 {
@@ -13,10 +13,29 @@ abstract class ModelController extends Controller
 
     var $model;
     var $model_code;
-    var $can_upload_photo;
     var $response_type;
     var $model_views_path;
 
+    function __construct($resouceClass, $response_type = null)
+    {
+        $this->middleware('auth');
+        $this->model = new $resouceClass;
+        $this->model_code = $this->extractCode($resouceClass);
+
+        if ($response_type == null) {
+            $this->response_type = self::$VIEW_RESPONSE_TYPE;
+        } else {
+            $this->response_type = $response_type;
+        }
+
+        $this->model_views_path = config('crud-rails.forms.views-path'). '.' . $this->model_code;
+    }
+
+    /**
+     * Define o código do modelo a ser utilizado com base em sua classe.
+     * @param $resouceClass
+     * @return string
+     */
     private function extractCode($resouceClass)
     {
         $model_name_parts = explode("\\", $resouceClass);
@@ -25,106 +44,21 @@ abstract class ModelController extends Controller
         return strtolower(str_replace(" ", "_", trim($model_name)));
     }
 
-    function __construct($resouceClass, $canUploadFile = false)
-    {
-        $this->middleware('auth');
-        $this->model = new $resouceClass;
-        $this->model_code = $this->extractCode($resouceClass);
-        $this->can_upload_photo = $canUploadFile;
-        $this->response_type = self::$VIEW_RESPONSE_TYPE;
-        $this->model_views_path = 'adm.resources.' . $this->model_code;
-    }
-
-    public function setResponseType($response_type)
-    {
-        $this->response_type = $response_type;
-    }
-
+    /**
+     * Ponto de extensão que permite adicionar parâmetros à view.
+     * @param Request $request
+     * @param $view
+     * @return mixed
+     */
     protected function decorateView(Request $request, $view)
     {
         return $view;
     }
 
-    public function paginate()
-    {
-        return $this->model->paginate(50);
-    }
-
-    public function index(Request $request)
-    {
-        $this->checkIndexGate($request);
-
-        if ($this->response_type == self::$VIEW_RESPONSE_TYPE) {
-            $view = view($this->model_views_path . '.index')
-                ->with("paginate_models", $this->paginate())
-                ->with("model_code", $this->model_code);
-            return $this->decorateView($request, $view);
-        }
-
-        if ($this->response_type == self::$JSON_RESPONSE_TYPE) {
-            return response()->json($this->model);
-        }
-    }
-
-    public function edit(Request $request, $id)
-    {
-
-        $this->model = $this->model->find($id);
-        $this->unmountModel($request, $this->model);
-
-        $this->checkEditGate($request);
-
-        if ($this->response_type == self::$VIEW_RESPONSE_TYPE) {
-            $view = view($this->model_views_path . '.form')
-                ->with("model", $this->model)
-                ->with("model_code", $this->model_code)
-                ->with("action", route($this->model_code . ".update", ['id' => $id]));
-            return $this->decorateView($request, $view);
-        }
-
-        if ($this->response_type == self::$JSON_RESPONSE_TYPE) {
-            return response()->json($this->model);
-        }
-    }
-
-    public function show(Request $request, $id)
-    {
-        return $this->edit($request, $id);
-
-    }
-
-
-    public function checkCreateGate(Request $request)
-    {
-        //Utiliza o mesmo GATE de store para update.
-        return $this->checkStoreGate($request);
-    }
-
-    public function beforeCreate(Request $request)
-    {
-    }
-
-    public function create(Request $request)
-    {
-        $this->beforeCreate($request);
-        $this->checkCreateGate($request);
-
-        $view = view($this->model_views_path . ".form")
-            ->with("model", $this->model)
-            ->with("model_code", $this->model_code)
-            ->with("action", route($this->model_code . ".store"));
-
-        return $this->decorateView($request, $view);
-    }
-
-    public function beforeStore(Request $request)
-    {
-    }
-
-    public function beforeMount(Request $request)
-    {
-    }
-
+    /**
+     * Converte uma requisição em um objeto modelo.
+     * @param Request $request
+     */
     public function mountModel(Request $request)
     {
         $except = $this->model->autoSyncFields;
@@ -146,29 +80,198 @@ abstract class ModelController extends Controller
             $this->model[$nullRelation] = null;
         }
 
-        //Modelo pode receber arquivos?
-        if ($this->can_upload_photo) {
+        //O modelo possui uma foto?
+        if (method_exists($this->model, "photo")) {
 
             //Foi enviado uma nova foto válida?
             if ($request->hasFile('photo') && $request->file('photo')->isValid()) {
+
+                //Armazena foto no repositório.
                 $photo = PhotoRepository::createPhotoFromLocalFile($request->file('photo'), "/photos");
                 $this->model->photo_id = $photo->id;
             }
         }
     }
 
+    /**
+     * Ponto de extenção que permite executar comandos antes de montar o objeto modelo.
+     * @param Request $request
+     */
+    public function beforeMount(Request $request)
+    {
+    }
+
+    /**
+     * Converte um objeto modelo em atributos da requisição.
+     * @param Request $request
+     */
     public function unmountModel(Request $request)
     {
 
     }
 
-    public function checkStoreGate(Request $request)
+
+    //################## INDEX BLOCK ################################//
+
+    /**
+     * Lista os registros.
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function index(Request $request)
+    {
+        $this->checkIndexGate($request);
+
+        if ($this->response_type == self::$VIEW_RESPONSE_TYPE) {
+            $view = view($this->model_views_path . '.index')
+                ->with("paginate_models", $this->paginate($request))
+                ->with("model_code", $this->model_code);
+            return $this->decorateView($request, $view);
+        }
+
+        if ($this->response_type == self::$JSON_RESPONSE_TYPE) {
+            return response()->json($this->model);
+        }
+    }
+
+    /**
+     * Realiza a paginação dos Elementos a serem exibidos na listagem.
+     * Caso existam filtros, deve-se aplicá-los aqui.
+     * @return mixed
+     */
+    public function paginate(Request $request)
+    {
+        return $this->model->paginate(50);
+    }
+
+    /**
+     * Verifica se requisição possui permissão de listagem de registros.
+     * @param Request $request
+     */
+    public function checkIndexGate(Request $request)
+    {
+        //Utiliza o mesmo GATE de store para update.
+        return $this->checkStoreGate($request);
+    }
+
+
+    //################## EDIT BLOCK ################################//
+
+    /**
+     * Exibe formulário de edição do registro.
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function edit(Request $request, $id)
+    {
+        $this->model = $this->model->find($id);
+
+        $this->checkEditGate($request);
+
+        $this->unmountModel($request, $this->model);
+
+        if ($this->response_type == self::$VIEW_RESPONSE_TYPE) {
+            $view = view($this->model_views_path . '.form')
+                ->with("model", $this->model)
+                ->with("model_code", $this->model_code)
+                ->with("action", route($this->model_code . ".update", ['id' => $id]));
+            return $this->decorateView($request, $view);
+        }
+
+        if ($this->response_type == self::$JSON_RESPONSE_TYPE) {
+            return response()->json($this->model);
+        }
+    }
+
+    /**
+     * Verifica se a requisição possui permissão para editar o registro.
+     * @param Request $request
+     */
+    public function checkEditGate(Request $request)
+    {
+        //Utiliza o mesmo GATE de store para update.
+        return $this->checkStoreGate($request);
+    }
+
+
+    //################## SHOW BLOCK ################################//
+
+    /**
+     * Exibe os dados do registro.
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(Request $request, $id)
+    {
+        $this->checkShowGate($request);
+        return $this->edit($request, $id);
+    }
+
+    /**
+     * Verifica se requisição possui permissão para exibir o registro.
+     * @param Request $request
+     */
+    public function checkShowGate(Request $request)
+    {
+        //Utiliza o mesmo GATE de store para update.
+        return $this->checkStoreGate($request);
+    }
+
+
+    //################## CREATE BLOCK ################################//
+
+    /**
+     * Exibe formulário de criação do registro.
+     * @param Request $request
+     * @return mixed
+     */
+    public function create(Request $request)
+    {
+        $this->checkCreateGate($request);
+        $this->beforeCreate($request);
+
+        $view = view($this->model_views_path . ".form")
+            ->with("model", $this->model)
+            ->with("model_code", $this->model_code)
+            ->with("action", route($this->model_code . ".store"));
+
+        return $this->decorateView($request, $view);
+    }
+
+    /**
+     * Verifica se requisição possui permissão para criar registro.
+     * @param Request $request
+     */
+    public function checkCreateGate(Request $request)
+    {
+        //Utiliza o mesmo GATE de store para update.
+        return $this->checkStoreGate($request);
+    }
+
+    /**
+     * Ponto de extenção que permite executar comandos antes da ação do método create.
+     * @param Request $request
+     */
+    public function beforeCreate(Request $request)
     {
     }
 
+
+    //################## STORE BLOCK ################################//
+
+    /**
+     * Salva um novo registro.
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request)
     {
+        //Existem regras definidas no modelo?
         if (isset($this->model->rules)) {
+
+            //A requisição respeita as regras definidas no modelo?
             $this->validate($request, $this->model->rules);
         }
 
@@ -176,7 +279,7 @@ abstract class ModelController extends Controller
         $this->mountModel($request);
         $this->beforeStore($request);
 
-        //Verifica se existe permissão para criar model.
+        //Verifica se existe permissão para criar registro.
         $this->checkStoreGate($request);
 
         $this->model->save();
@@ -206,42 +309,39 @@ abstract class ModelController extends Controller
         }
     }
 
+    /**
+     * Verifica se requisição possui permissão para armazenar novo registro.
+     * @param Request $request
+     */
+    public function checkStoreGate(Request $request)
+    {
+    }
+
+    /**
+     * Ponto de extenção que permite executar comandos antes da ação do método store.
+     * @param Request $request
+     */
+    public function beforeStore(Request $request)
+    {
+    }
+
+    /**
+     * Ponto de extenção que permite executar comandos após da ação do método store.
+     * @param Request $request
+     */
     public function afterStore(Request $request)
     {
     }
-    public function beforeDestroy(Request $request)
-    {
-    }
-    public function afterDestroy(Request $request)
-    {
-    }
 
-    public function beforeUpdate(Request $request)
-    {
-    }
 
-    public function afterUpdate(Request $request)
-    {
-    }
+    //################## UPDATE BLOCK ################################//
 
-    public function checkIndexGate(Request $request)
-    {
-        //Utiliza o mesmo GATE de store para update.
-        return $this->checkStoreGate($request);
-    }
-
-    public function checkEditGate(Request $request)
-    {
-        //Utiliza o mesmo GATE de store para update.
-        return $this->checkStoreGate($request);
-    }
-
-    public function checkUpdateGate(Request $request)
-    {
-        //Utiliza o mesmo GATE de store para update.
-        return $this->checkStoreGate($request);
-    }
-
+    /**
+     * Atualiza um registro.
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request, $id)
     {
         $this->validate($request, $this->model->rules);
@@ -280,12 +380,41 @@ abstract class ModelController extends Controller
 
     }
 
-    public function checkDestroyGate(Request $request)
+    /**
+     * Verifica se requisição possui permissão para atualizar o registro.
+     * @param Request $request
+     */
+    public function checkUpdateGate(Request $request)
     {
-        //Utiliza o mesmo GATE de store para destroy.
+        //Utiliza o mesmo GATE de store para update.
         return $this->checkStoreGate($request);
     }
 
+    /**
+     * Ponto de extenção que permite executar comandos antes da ação do método update.
+     * @param Request $request
+     */
+    public function beforeUpdate(Request $request)
+    {
+    }
+
+    /**
+     * Ponto de extenção que permite executar comandos após da ação do método store.
+     * @param Request $request
+     */
+    public function afterUpdate(Request $request)
+    {
+    }
+
+
+    //################## DESTROY BLOCK ################################//
+
+    /**
+     * Apaga um registro.
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     */
     public function destroy(Request $request, $id)
     {
         $this->model = $this->model->find($id);
@@ -309,4 +438,31 @@ abstract class ModelController extends Controller
         }
 
     }
+
+    /**
+     * Verifica se requisição possui permissão para apagar o registro.
+     * @param Request $request
+     */
+    public function checkDestroyGate(Request $request)
+    {
+        //Utiliza o mesmo GATE de store para destroy.
+        return $this->checkStoreGate($request);
+    }
+
+    /**
+     * Ponto de extenção que permite executar comandos antes da ação do método destroy.
+     * @param Request $request
+     */
+    public function beforeDestroy(Request $request)
+    {
+    }
+
+    /**
+     * Ponto de extenção que permite executar comandos após da ação do método destroy.
+     * @param Request $request
+     */
+    public function afterDestroy(Request $request)
+    {
+    }
+
 }

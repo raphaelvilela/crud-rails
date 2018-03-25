@@ -19,6 +19,7 @@ class CrudRailsServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__.'/../../resources/views' => base_path('resources/views/raphaelvilela/crud-rails'),
+            __DIR__.'/../../config/crud-rails.php' => base_path('config/crud-rails.php'),
         ]);
     }
 
