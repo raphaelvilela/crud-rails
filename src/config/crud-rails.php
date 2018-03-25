@@ -12,7 +12,10 @@ return [
     ],
 
     'photos' => [
-        'filesystem' => "photos"
+        'filesystem' => [
+            "name" => "photos",
+            'base-url' => env('IMAGES_S3_URL', '/'),
+        ]
     ]
 
 ];

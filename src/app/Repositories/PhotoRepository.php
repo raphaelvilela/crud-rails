@@ -62,26 +62,26 @@ class PhotoRepository
         $manager = new ImageManager(array('driver' => config('image.driver')));
 
         $fullPhotoFileName = $path . "/" . $photo->id . "-full.jpg";
-        Storage::disk('photos')->put($fullPhotoFileName, file_get_contents($local_file_path));
+        Storage::disk(config('crud-rails.photos.filesystem.name'))->put($fullPhotoFileName, file_get_contents($local_file_path));
 
         $thumbPhotoFileName = $path . "/" . $photo->id . "-200x200.jpg";
         $manager->make($local_file_path)->fit(200, 200, function ($constraint) {
             $constraint->upsize();
         })->save(storage_path() . $thumbPhotoFileName, self::$THUMB_IMAGE_QUALITY);
-        Storage::disk('photos')->put($thumbPhotoFileName, file_get_contents(storage_path() . $thumbPhotoFileName));
+        Storage::disk(config('crud-rails.photos.filesystem.name'))->put($thumbPhotoFileName, file_get_contents(storage_path() . $thumbPhotoFileName));
 
         $miniPhotoFileName = $path . "/" . $photo->id . "-100x100.jpg";
         $manager->make($local_file_path)->fit(100, 100, function ($constraint) {
             $constraint->upsize();
         })->save(storage_path() . ($miniPhotoFileName), self::$MINI_IMAGE_QUALITY);
-        Storage::disk('photos')->put(
+        Storage::disk(config('crud-rails.photos.filesystem.name'))->put(
             $miniPhotoFileName,
             file_get_contents(storage_path() . ($miniPhotoFileName))
         );
 
-        $photo->full_url = config('filesystems.disks.photos.url') . $fullPhotoFileName;
-        $photo->thumb_url = config('filesystems.disks.photos.url') . $thumbPhotoFileName;
-        $photo->mini_url = config('filesystems.disks.photos.url') . $miniPhotoFileName;
+        $photo->full_url = config('crud-rails.photos.filesystem.base-url') . $fullPhotoFileName;
+        $photo->thumb_url = config('crud-rails.photos.filesystem.base-url') . $thumbPhotoFileName;
+        $photo->mini_url = config('crud-rails.photos.filesystem.base-url') . $miniPhotoFileName;
         $photo->save();
 
         try {
