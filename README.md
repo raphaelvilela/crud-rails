@@ -6,6 +6,7 @@ Para instalar esse pacote, é necessário executar os seguintes comandos:
 composer require raphaelvilela/crud-rails
 php artisan vendor:publish
 ```
+É necessário publicar arquivos do pacote <b>laravel-pagination</b> e <b>raphaelvilela/crud-rails</b>.
 
 ##Utilização
 Para a criação de um CRUD é necessário seguir os seguintes passos:
