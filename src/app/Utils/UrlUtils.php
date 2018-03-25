@@ -1,6 +1,6 @@
 <?php
 
-namespace RaphaelVilela\CrudRails\Utils;
+namespace RaphaelVilela\CrudRails\App\Utils;
 
 class UrlUtils
 {

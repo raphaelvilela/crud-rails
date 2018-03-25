@@ -1,6 +1,6 @@
 <?php
 
-namespace RaphaelVilela\CrudRails\Providers;
+namespace RaphaelVilela\CrudRails\App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 

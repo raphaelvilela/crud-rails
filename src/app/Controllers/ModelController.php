@@ -1,6 +1,6 @@
 <?php
 
-namespace RaphaelVilela\CrudRails\Controllers;
+namespace RaphaelVilela\CrudRails\App\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\PhotoRepository;

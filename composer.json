@@ -15,7 +15,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "RaphaelVilela\\CrudRails\\Providers\\CrudRailsServiceProvider"
+                "RaphaelVilela\\CrudRails\\App\\Providers\\CrudRailsServiceProvider"
             ]
         }
     }

@@ -6,7 +6,7 @@
  * Time: 21:54
  */
 
-namespace App\Utils;
+namespace RaphaelVilela\CrudRails\App\Utils;
 
 
 class StringUtils
