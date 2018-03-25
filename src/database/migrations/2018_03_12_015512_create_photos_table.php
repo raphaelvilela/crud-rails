@@ -12,15 +12,18 @@ class CreatePhotosTable extends Migration
      */
     public function up()
     {
-        Schema::create('photos', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('full_url');
-            $table->string('thumb_url');
-            $table->string('mini_url');
-            $table->string('title')->nullable();
-            $table->boolean('published')->default(true);
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('photos')) {
+
+            Schema::create('photos', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('full_url');
+                $table->string('thumb_url');
+                $table->string('mini_url');
+                $table->string('title')->nullable();
+                $table->boolean('published')->default(true);
+                $table->timestamps();
+            });
+        }
     }
 
     /**

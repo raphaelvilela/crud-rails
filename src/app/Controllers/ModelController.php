@@ -18,7 +18,6 @@ abstract class ModelController extends Controller
 
     function __construct($resouceClass, $response_type = null)
     {
-        $this->middleware('auth');
         $this->model = new $resouceClass;
         $this->model_code = $this->extractCode($resouceClass);
 
