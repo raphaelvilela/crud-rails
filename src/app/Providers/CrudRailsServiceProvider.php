@@ -30,6 +30,6 @@ class CrudRailsServiceProvider extends ServiceProvider
     public function register()
     {
         include __DIR__.'/../../routes/web.php';
-        $this->app->make('RaphaelVilela\CrudRails\App\Controllers\ModelController');
+        //$this->app->make('RaphaelVilela\CrudRails\App\Controllers\ModelController');
     }
 }
