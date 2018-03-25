@@ -18,5 +18,11 @@
                 "RaphaelVilela\\CrudRails\\App\\Providers\\CrudRailsServiceProvider"
             ]
         }
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "RaphaelVilela\\CrudRails\\": "src"
+        }
     }
 }
