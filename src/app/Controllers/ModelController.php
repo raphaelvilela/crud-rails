@@ -3,6 +3,7 @@
 namespace RaphaelVilela\CrudRails\App\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use RaphaelVilela\CrudRails\App\Repositories\PhotoRepository;
 
@@ -27,7 +28,7 @@ abstract class ModelController extends Controller
             $this->response_type = $response_type;
         }
 
-        $this->model_views_path = config('crud-rails.forms.views-path'). '.' . $this->model_code;
+        $this->model_views_path = config('crud-rails.forms.views-path') . '.' . $this->model_code;
     }
 
     /**
@@ -120,16 +121,18 @@ abstract class ModelController extends Controller
     public function index(Request $request)
     {
         $this->checkIndexGate($request);
+        $paginate = $this->paginate($request);
 
         if ($this->response_type == self::$VIEW_RESPONSE_TYPE) {
-            $view = view($this->model_views_path . '.index')
-                ->with("paginate_models", $this->paginate($request))
-                ->with("model_code", $this->model_code);
+            $view = view("crud-rails::forms.list")
+                ->with("paginate_models", $paginate)
+                ->with("model_code", $this->model_code)
+                ->with("list_configuration_closure", $this->configureList($request));
             return $this->decorateView($request, $view);
         }
 
         if ($this->response_type == self::$JSON_RESPONSE_TYPE) {
-            return response()->json($this->model);
+            return response()->json($paginate);
         }
     }
 
@@ -153,6 +156,12 @@ abstract class ModelController extends Controller
         return $this->checkStoreGate($request);
     }
 
+    /**
+     * Configura a lista de registros.
+     * @param Request $request
+     * @return array
+     */
+    public abstract function configureList(Request $request): \Closure;
 
     //################## EDIT BLOCK ################################//
 
@@ -171,7 +180,8 @@ abstract class ModelController extends Controller
         $this->unmountModel($request, $this->model);
 
         if ($this->response_type == self::$VIEW_RESPONSE_TYPE) {
-            $view = view($this->model_views_path . '.form')
+            $view = view("crud-rails::forms.form")
+                ->with("edit_form_config", $this->configureEditForm($request))
                 ->with("model", $this->model)
                 ->with("model_code", $this->model_code)
                 ->with("action", route($this->model_code . ".update", ['id' => $id]));
@@ -193,6 +203,15 @@ abstract class ModelController extends Controller
         return $this->checkStoreGate($request);
     }
 
+    /**
+     * Configura o formulário de edição do CRUD.
+     * @param Request $request
+     * @return array
+     */
+    public function configureEditForm(Request $request): array
+    {
+        return $this->configureCreateForm($request);
+    }
 
     //################## SHOW BLOCK ################################//
 
@@ -218,6 +237,12 @@ abstract class ModelController extends Controller
         return $this->checkStoreGate($request);
     }
 
+    /**
+     * Configura o formulário de criação do CRUD.
+     * @param Request $request
+     * @return array
+     */
+    public abstract function configureCreateForm(Request $request): array;
 
     //################## CREATE BLOCK ################################//
 
@@ -231,7 +256,8 @@ abstract class ModelController extends Controller
         $this->checkCreateGate($request);
         $this->beforeCreate($request);
 
-        $view = view($this->model_views_path . ".form")
+        $view = view("crud-rails::forms.form")
+            ->with("create_form_config", $this->configureCreateForm($request))
             ->with("model", $this->model)
             ->with("model_code", $this->model_code)
             ->with("action", route($this->model_code . ".store"));
