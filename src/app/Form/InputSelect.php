@@ -18,7 +18,7 @@ class InputSelect extends Input
         string $name,
         ?string $value,
         string $label,
-        string $options = null)
+        array $options = [])
     {
         parent::__construct($name, $value, "crud-rails::forms.components.select");
         $this->label = $label;
