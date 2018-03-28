@@ -11,7 +11,8 @@ namespace RaphaelVilela\CrudRails\App\Form;
 
 class InputSelect extends Input
 {
-    protected $label;
+    public $label;
+    public $options;
 
     public function __construct(
         string $name,

@@ -11,8 +11,8 @@ namespace RaphaelVilela\CrudRails\App\Form;
 
 class InputMoney extends Input
 {
-    protected $placeholder;
-    protected $label;
+    public $placeholder;
+    public $label;
 
     public function __construct(
         string $name,

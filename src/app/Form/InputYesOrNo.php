@@ -11,7 +11,7 @@ namespace RaphaelVilela\CrudRails\App\Form;
 
 class  InputYesOrNo extends Input
 {
-    protected $label;
+    public $label;
 
     public function __construct(
         string $name,

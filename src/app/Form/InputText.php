@@ -11,9 +11,9 @@ namespace RaphaelVilela\CrudRails\App\Form;
 
 class InputText extends Input
 {
-    protected $placeholder;
-    protected $label;
-    protected $mask;
+    public $placeholder;
+    public $label;
+    public $mask;
 
     public function __construct(
         string $name,
