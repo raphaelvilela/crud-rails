@@ -31,6 +31,10 @@
                     <input type="hidden" name="_method" value="PUT">
                 @endif
 
+                @foreach($form_config["fields"] as $field_config)
+                    @include($field_config->view_component, ["model" => $model, "field_config" => $field_config])
+                @endforeach
+
                 @yield('fields')
             </form>
         </div>

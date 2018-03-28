@@ -181,7 +181,7 @@ abstract class ModelController extends Controller
 
         if ($this->response_type == self::$VIEW_RESPONSE_TYPE) {
             $view = view("crud-rails::forms.form")
-                ->with("edit_form_config", $this->configureEditForm($request))
+                ->with("form_config", $this->configureEditForm($request))
                 ->with("model", $this->model)
                 ->with("model_code", $this->model_code)
                 ->with("action", route($this->model_code . ".update", ['id' => $id]));
@@ -257,7 +257,7 @@ abstract class ModelController extends Controller
         $this->beforeCreate($request);
 
         $view = view("crud-rails::forms.form")
-            ->with("create_form_config", $this->configureCreateForm($request))
+            ->with("form_config", $this->configureCreateForm($request))
             ->with("model", $this->model)
             ->with("model_code", $this->model_code)
             ->with("action", route($this->model_code . ".store"));

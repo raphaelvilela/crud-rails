@@ -1,12 +1,11 @@
 @php ($label = (isset($label)?$label:null))
 @php ($errors = (isset($errors)?$errors:null))
-@component("crud-rails::forms.formField",["name" => $name, "label" => $label, "errors" => $errors])
-    <input id="{{$name}}"
-           name="{{$name}}"
-           @if(isset($readonly)) readonly='' @endif
+@component("crud-rails::forms.formField",["name" => $field_config->name, "label" => $field_config->label, "errors" => $errors])
+    <input id="{{$field_config->name}}"
+           name="{{$field_config->name}}"
            type="text"
            class="form-control"
-           data-mask-type="{{$mask or ''}}"
-           placeholder="{{$placeholder or ''}}"
-           value="{{ (old($name) != null)?old($name):$model[$name] }}"/>
+           data-mask-type="{{$field_config->mask or ''}}"
+           placeholder="{{$field_config->placeholder or ''}}"
+           value="{{ (old($field_config->name) != null)?old($field_config->name):$field_config->value }}"/>
 @endcomponent

@@ -10,9 +10,9 @@ namespace RaphaelVilela\CrudRails\App\Form;
 
 class Input
 {
-    protected $name;
-    protected $value;
-    protected $view_component;
+    public $name;
+    public $value;
+    public $view_component;
 
     public function __construct(string $name, ?string $value, string $view_component)
     {
@@ -20,5 +20,4 @@ class Input
         $this->value = $value;
         $this->view_component = $view_component;
     }
-
 }
