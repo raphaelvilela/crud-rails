@@ -15,7 +15,7 @@ class InputSelect extends Input
 
     public function __construct(
         string $name,
-        string $value,
+        ?string $value,
         string $label,
         string $options = null)
     {

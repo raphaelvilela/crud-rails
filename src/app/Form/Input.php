@@ -14,7 +14,7 @@ class Input
     protected $value;
     protected $view_component;
 
-    public function __construct(string $name, string $value, string $view_component)
+    public function __construct(string $name, ?string $value, string $view_component)
     {
         $this->name = $name;
         $this->value = $value;

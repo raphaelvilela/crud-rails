@@ -16,7 +16,7 @@ class InputMoney extends Input
 
     public function __construct(
         string $name,
-        string $value,
+        ?string $value,
         string $label,
         string $placeholder = null)
     {

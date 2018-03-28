@@ -17,8 +17,8 @@ class InputText extends Input
 
     public function __construct(
         string $name,
-        string $value,
-        string $label,
+        ?string $value,
+        ?string $label,
         string $placeholder = null,
         string $mask = null)
     {

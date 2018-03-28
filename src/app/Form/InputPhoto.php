@@ -15,7 +15,7 @@ class InputPhoto extends Input
 
     public function __construct(
         string $name,
-        string $value,
+        ?string $value,
         string $label)
     {
         parent::__construct($name, $value, "crud-rails::forms.components.inputPhoto");

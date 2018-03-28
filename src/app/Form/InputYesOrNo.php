@@ -15,8 +15,8 @@ class  InputYesOrNo extends Input
 
     public function __construct(
         string $name,
-        string $value,
-        string $label)
+        ?string $value,
+        ?string $label)
     {
         parent::__construct($name, $value, "crud-rails::forms.components.inputYesOrNo");
         $this->label = $label;
