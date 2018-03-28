@@ -8,5 +8,5 @@
             class="form-control"
             data-mask-type="{{$field_config->mask or ''}}"
             placeholder="{{$field_config->placeholder or ''}}"
-            rows="10">{!!  (old($field_config->value) != null)?old($field_config->value):$field_config->value !!}</textarea>
+            rows="10">{!! (old($field_config->name) != null)?old($field_config->name):$field_config->value !!}</textarea>
 @endcomponent

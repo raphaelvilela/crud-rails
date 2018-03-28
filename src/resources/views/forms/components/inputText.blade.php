@@ -7,5 +7,5 @@
            class="form-control"
            data-mask-type="{{$field_config->mask or ''}}"
            placeholder="{{$field_config->placeholder or ''}}"
-           value="{{ (old($field_config->value) != null)?old($field_config->value):$field_config->value }}"/>
+           value="{{ (old($field_config->name) != null)?old($field_config->name):$field_config->value }}"/>
 @endcomponent
