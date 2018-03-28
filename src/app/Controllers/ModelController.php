@@ -3,7 +3,6 @@
 namespace RaphaelVilela\CrudRails\App\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use RaphaelVilela\CrudRails\App\Repositories\PhotoRepository;
 
@@ -358,6 +357,12 @@ abstract class ModelController extends Controller
     {
     }
 
+    /**
+     * Ponto de extenção que permite definir validações da requisição antes da ação do método store.
+     * @param Request $request
+     */
+    public abstract function validateStoreRequest(Request $request);
+
 
     //################## UPDATE BLOCK ################################//
 
@@ -369,8 +374,7 @@ abstract class ModelController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, $this->model->rules);
-
+        $this->validateUpdateRequest($request);
         $this->model = $this->model->find($id);
         $this->mountModel($request);
         $this->beforeUpdate($request);
@@ -429,6 +433,15 @@ abstract class ModelController extends Controller
      */
     public function afterUpdate(Request $request)
     {
+    }
+
+    /**
+     * Ponto de extenção que permite definir validações da requisição antes da ação do método update.
+     * @param Request $request
+     */
+    public function validateUpdateRequest(Request $request){
+        //Como padrão é usado a mesma regra de validação da criação.
+        return $this->validateStoreRequest($request);
     }
 
 

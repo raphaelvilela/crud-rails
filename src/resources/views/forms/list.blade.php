@@ -41,7 +41,7 @@
         </thead>
         @foreach($paginate_models as $model)
             <tr>
-                @foreach($list_config["values"]->call($model) as $column_value)
+                @foreach((  ($list_config["values"])($model)) as $column_value)
                     <td>{{$column_value}}</td>
                 @endforeach
                 <td>
