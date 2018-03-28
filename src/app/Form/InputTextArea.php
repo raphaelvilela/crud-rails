@@ -9,21 +9,19 @@
 namespace RaphaelVilela\CrudRails\App\Form;
 
 
-use RaphaelVilela\CrudRails\App\Photo;
-
-class InputPhoto extends Input
+class InputTextArea extends Input
 {
+    public $placeholder;
     public $label;
-    public $photo;
 
     public function __construct(
         string $name,
         ?string $value,
-        string $label,
-        ?Photo $photo)
+        ?string $label,
+        string $placeholder = null)
     {
-        parent::__construct($name, $value, "crud-rails::forms.components.inputPhoto");
+        parent::__construct($name, $value, "crud-rails::forms.components.inputTextArea");
         $this->label = $label;
-        $this->photo = $photo;
+        $this->placeholder = $placeholder;
     }
 }
