@@ -7,7 +7,7 @@
  */
 
 namespace RaphaelVilela\CrudRails\App\Form;
-
+use Illuminate\Support\Collection;
 
 class InputSelect extends Input
 {
@@ -18,7 +18,7 @@ class InputSelect extends Input
         string $name,
         ?string $value,
         string $label,
-        array $options = [])
+        Collection $options = null)
     {
         parent::__construct($name, $value, "crud-rails::forms.components.select");
         $this->label = $label;
