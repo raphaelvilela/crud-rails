@@ -1,14 +1,13 @@
 @php ($label = (isset($label)?$label:null))
 @php ($errors = (isset($errors)?$errors:null))
-@component("crud-rails::forms.formField",["name" => $name, "label" => $label, "errors" => $errors])
+@component("crud-rails::forms.formField",["name" => $field_config->name, "label" => $field_config->label, "errors" => $errors])
     <textarea
-            id="{{$name}}"
-            name="{{$name}}"
+            id="{{$field_config->name}}"
+            name="{{$field_config->name}}"
             type="text"
             class="form-control"
-            data-mask-type="{{$mask or ''}}"
-            placeholder="{{$placeholder or ''}}"
-            rows="10">{{ (old($name) != null)?old($name):$model[$name] }}</textarea>
+            placeholder="{{$field_config->placeholder or ''}}"
+            rows="10">{!! (old($field_config->name) != null)?old($field_config->name):$field_config->value  !!}</textarea>
 @endcomponent
 
 @push("onLoadScript")
