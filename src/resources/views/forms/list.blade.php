@@ -34,14 +34,14 @@
 
     <table class="table table-sm table-striped">
         <thead>
-        @foreach($list_config->columns as $column_name)
+        @foreach($list_config["columns"] as $column_name)
             <th>{{$column_name}}</th>
         @endforeach
         <th>Ações</th>
         </thead>
         @foreach($paginate_models as $model)
             <tr>
-                @foreach($list_config->values($model) as $column_value)
+                @foreach($list_config["values"]->call($model) as $column_value)
                     <td>{{$column_value}}</td>
                 @endforeach
                 <td>
