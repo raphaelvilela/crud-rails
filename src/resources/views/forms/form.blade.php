@@ -37,7 +37,7 @@
 
                 @yield('fields')
 
-                @include("crud-rails.forms.components.submit")
+                @include("crud-rails::forms.components.submit")
             </form>
         </div>
     </div>
