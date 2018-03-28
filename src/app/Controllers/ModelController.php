@@ -127,7 +127,7 @@ abstract class ModelController extends Controller
             $view = view("crud-rails::forms.list")
                 ->with("paginate_models", $paginate)
                 ->with("model_code", $this->model_code)
-                ->with("list_config_closure", $this->configureList($request));
+                ->with("list_config", $this->configureList($request));
             return $this->decorateView($request, $view);
         }
 

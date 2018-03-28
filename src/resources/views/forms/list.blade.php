@@ -34,15 +34,15 @@
 
     <table class="table table-sm table-striped">
         <thead>
-        @foreach(\App\Slider::$list_fields as $field)
-            <th>{{$field["name"]}}</th>
+        @foreach($list_config->columns as $column_name)
+            <th>{{$column_name}}</th>
         @endforeach
         <th>Ações</th>
         </thead>
         @foreach($paginate_models as $model)
             <tr>
-                @foreach(\App\Slider::$list_fields as $field)
-                    <td>{{$model["attributes"][$field["name"]]}}</td>
+                @foreach($list_config->values($model) as $column_value)
+                    <td>{{$column_value}}</td>
                 @endforeach
                 <td>
                     <a class="btn btn-success btn-sm" href="{{route($model_code . '.edit', ['id' => $model->id])}}">
