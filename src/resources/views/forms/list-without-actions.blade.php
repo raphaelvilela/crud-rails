@@ -3,11 +3,7 @@
 @section('content')
 
     <h1 class="hidden-xs">{{$product_site->name or ""}}
-        <small>Lista de {{trans_choice('entities.' . $model_code, 2)}}
-            <a href="{{route($model_code . ".create")}}" class="btn btn-success">
-                <i class="fa fa-plus"></i>
-            </a>
-        </small>
+        <small>Lista de {{trans_choice('entities.' . $model_code, 2)}}</small>
     </h1>
 
     @if (session()->has('success'))
@@ -39,27 +35,12 @@
         @foreach($list_config["columns"] as $column_name)
             <th>{{$column_name}}</th>
         @endforeach
-        <th>Ações</th>
         </thead>
         @foreach($paginate_models as $model)
             <tr>
                 @foreach((  ($list_config["values"])($model)) as $column_value)
                     <td>{{$column_value}}</td>
                 @endforeach
-                <td>
-                    <a class="btn btn-success btn-sm" href="{{route($model_code . '.edit', ['id' => $model->id])}}">
-                        <i class="fa fa-edit"></i> <span class="hidden-xs">Editar</span>
-                    </a>
-                    <form class="d-inline-block"
-                          method="post"
-                          action="{{route($model_code . '.destroy',['id'=>$model->id])}}">
-                        <input type="hidden" name="_method" value="DELETE"/>
-                        {{ csrf_field() }}
-                        <button type="submit" class="btn btn-danger btn-sm">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </form>
-                </td>
             </tr>
         @endforeach
     </table>

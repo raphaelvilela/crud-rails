@@ -123,7 +123,7 @@ abstract class ModelController extends Controller
         $paginate = $this->paginate($request);
 
         if ($this->response_type == self::$VIEW_RESPONSE_TYPE) {
-            $view = view("crud-rails::forms.list")
+            $view = view($this->getIndexViewName())
                 ->with("paginate_models", $paginate)
                 ->with("model_code", $this->model_code)
                 ->with("list_config", $this->configureList($request));
@@ -133,6 +133,14 @@ abstract class ModelController extends Controller
         if ($this->response_type == self::$JSON_RESPONSE_TYPE) {
             return response()->json($paginate);
         }
+    }
+
+    /**
+     * Ponto de extensão que permite substituir a view utilizada no comando Index.
+     * @return string
+     */
+    public function getIndexViewName(){
+        return "crud-rails::forms.list";
     }
 
     /**

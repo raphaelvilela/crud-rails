@@ -1,7 +1,7 @@
 @php ($label = (isset($label)?$label:null))
 @php ($errors = (isset($errors)?$errors:null))
 @component("crud-rails::forms.formField",["name" => $field_config->name, "label" => $field_config->label, "errors" => $errors])
-    <select id="{{$field_config->name}}_hour" name="{{$field_config->name}}_hour" class="form-control">
+    <select id="{{$field_config->name}}" name="{{$field_config->name}}" class="form-control">
         <option value="{!! (old($field_config->name) != null)?old($field_config->name):$field_config->value  !!}">
             {!! (old($field_config->name) != null)?old($field_config->name):$field_config->value  !!}
         </option>
