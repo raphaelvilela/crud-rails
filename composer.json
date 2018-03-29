@@ -22,8 +22,9 @@
         }
     },
     "autoload": {
+        "classmap": [ "src/" ],
         "psr-4": {
-            "RaphaelVilela\\CrudRails\\App": "src/app"
+            "RaphaelVilela\\CrudRails\\App\\": "vendor/raphaelvilela/crud-rails/src/app/"
         }
     }
 }
