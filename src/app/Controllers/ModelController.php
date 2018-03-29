@@ -300,13 +300,7 @@ abstract class ModelController extends Controller
      */
     public function store(Request $request)
     {
-        //Existem regras definidas no modelo?
-        if (isset($this->model->rules)) {
-
-            //A requisição respeita as regras definidas no modelo?
-            $this->validate($request, $this->model->rules);
-        }
-
+        $this->validateStoreRequest($request);
         $this->beforeMount($request);
         $this->mountModel($request);
         $this->beforeStore($request);
