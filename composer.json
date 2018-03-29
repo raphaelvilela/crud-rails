@@ -23,8 +23,7 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "app/",
-            "RaphaelVilela\\CrudRails\\": "src"
+            "RaphaelVilela\\CrudRails\\App": "src/app"
         }
     }
 }
