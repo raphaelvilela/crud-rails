@@ -1,15 +1,10 @@
-<div class="form-group{{ $errors->has($name) ? ' has-error' : '' }}">
-    <label for="{{$name}}" class="control-label col-md-3 col-sm-3 col-12">{{$label or trans('validation.attributes.' . $name)}}</label>
-    <div class="col-12">
-        <div class="input-group">
-            <span class="input-group-addon">R$</span>
-            <input id="{{$name}}" name="{{$name}}" type="text" class="form-control" data-mask-type="money"
-                   value="{{ (old($name)!= null)?old($name):$model[$name] }}"/>
-        </div>
-        @if ($errors->has($name))
-            <span class="text-danger">
-                <strong>{{ $errors->first($name) }}</strong>
-            </span>
-        @endif
+@php ($label = (isset($label)?$label:null))
+@php ($errors = (isset($errors)?$errors:null))
+@component("crud-rails::forms.formField",["name" => $field_config->name, "label" => $field_config->label, "errors" => $errors])
+    <div class="input-group">
+        <span class="input-group-addon">R$</span>
+        <input id="{{$field_config->name}}" name="{{$field_config->name}}" type="text" class="form-control"
+               data-mask-type="money"
+               value="{{ (old($field_config->name) != null)?old($field_config->name):$field_config->value }}"/>
     </div>
-</div>
+@endcomponent
