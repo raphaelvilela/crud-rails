@@ -64,6 +64,6 @@
         @endforeach
     </table>
 
-    {{$paginate_models->links('vendor.pagination.bootstrap-4')}}
+    {{$paginate_models->links(config("crud-rails.forms.pagination-layout"))}}
 
 @endsection

@@ -14,7 +14,6 @@ abstract class ModelController extends Controller
     var $model;
     var $model_code;
     var $response_type;
-    var $model_views_path;
 
     function __construct($resouceClass, $response_type = null)
     {
@@ -26,8 +25,6 @@ abstract class ModelController extends Controller
         } else {
             $this->response_type = $response_type;
         }
-
-        $this->model_views_path = config('crud-rails.forms.views-path') . '.' . $this->model_code;
     }
 
     /**
