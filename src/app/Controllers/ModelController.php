@@ -120,10 +120,16 @@ abstract class ModelController extends Controller
         $paginate = $this->paginate($request);
 
         if ($this->response_type == self::$VIEW_RESPONSE_TYPE) {
+
+            $list_config = $this->configureList($request);
+            if(!isset($list_config["actions"])){
+                $list_config["actions"] = config("crud-rails.forms.default_actions");
+            }
+
             $view = view($this->getIndexViewName())
                 ->with("paginate_models", $paginate)
                 ->with("model_code", $this->model_code)
-                ->with("list_config", $this->configureList($request));
+                ->with("list_config", $list_config);
             return $this->decorateView($request, $view);
         }
 

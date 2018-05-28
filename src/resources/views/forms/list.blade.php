@@ -46,19 +46,54 @@
                 @foreach((  ($list_config["values"])($model)) as $column_value)
                     <td>{{$column_value}}</td>
                 @endforeach
+
                 <td>
-                    <a class="btn btn-success btn-sm" href="{{route($model_code . '.edit', ['id' => $model->id])}}">
-                        <i class="fa fa-edit"></i> <span class="hidden-xs">Editar</span>
-                    </a>
-                    <form class="d-inline-block"
-                          method="post"
-                          action="{{route($model_code . '.destroy',['id'=>$model->id])}}">
-                        <input type="hidden" name="_method" value="DELETE"/>
-                        {{ csrf_field() }}
-                        <button type="submit" class="btn btn-danger btn-sm">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </form>
+                    @foreach((  ($list_config["actions"])($model)) as $action)
+
+                        @switch($action["method"])
+
+                            @case("GET")
+                            <a class="{!! $action["btn-class"] !!}"
+                               href="{!! route($model_code . '.' . $action["model-route"], ["id" => $model->id]) !!}">
+                                <i class="{!! $action["icon-class"] !!}"></i>
+                                <span class="{!! config('crud-rails.layout-utils.hide-mobile-class') !!}">
+                                        {!! $action["label"] !!}
+                                    </span>
+                            </a>
+                            @break
+
+                            @case("POST")
+                            <form class="{!! $action["form-class"] !!}"
+                                  method="POST"
+                                  action="{!! route($model_code . '.' . $action["model-route"], ["id" => $model->id]) !!}">
+                                {{ csrf_field() }}
+                                <button type="submit" class="{!! $action["btn-class"] !!}">
+                                    <i class="{!! $action["icon-class"] !!}"></i>
+                                    <span class="{!! config('crud-rails.layout-utils.hide-mobile-class') !!}">
+                                            {!! $action["label"] !!}
+                                        </span>
+                                </button>
+                            </form>
+                            @break
+
+                            @case("DELETE")
+                            <form class="{!! $action["form-class"] !!}"
+                                  method="POST"
+                                  action="{!! route($model_code . '.' . $action["model-route"], ["id" => $model->id]) !!}">
+                                <input type="hidden" name="_method" value="DELETE"/>
+                                {{ csrf_field() }}
+                                <button type="submit" class="{!! $action["btn-class"] !!}">
+                                    <i class="{!! $action["icon-class"] !!}"></i>
+                                    <span class="{!! config('crud-rails.layout-utils.hide-mobile-class') !!}">
+                                            {!! $action["label"] !!}
+                                        </span>
+                                </button>
+                            </form>
+                            @break
+
+                        @endswitch
+
+                    @endforeach
                 </td>
             </tr>
         @endforeach
