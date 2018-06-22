@@ -48,12 +48,12 @@
                 @endforeach
 
                 <td>
-                    @foreach((  ($list_config["actions"])($model)) as $action)
+                    @foreach($list_config["actions"] as $action)
 
                         @switch($action["method"])
 
                             @case("GET")
-                            <a class="{!! $action["btn-class"] !!}"
+                            <a class="{!! $action["btn-class"] !!}" title="{!! $action["hint"] or  $action["label"] !!}"
                                href="{!! route($model_code . '.' . $action["model-route"], ["id" => $model->id]) !!}">
                                 <i class="{!! $action["icon-class"] !!}"></i>
                                 <span class="{!! config('crud-rails.layout-utils.hide-mobile-class') !!}">
@@ -68,7 +68,7 @@
                                   action="{!! route($model_code . '.' . $action["model-route"], ["id" => $model->id]) !!}">
                                 {{ csrf_field() }}
                                 <button type="submit" class="{!! $action["btn-class"] !!}">
-                                    <i class="{!! $action["icon-class"] !!}"></i>
+                                    <i class="{!! $action["icon-class"] !!}"  title="{!! $action["hint"] or  $action["label"] !!}"></i>
                                     <span class="{!! config('crud-rails.layout-utils.hide-mobile-class') !!}">
                                             {!! $action["label"] !!}
                                         </span>

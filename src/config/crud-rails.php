@@ -11,14 +11,14 @@ return [
         'pagination-layout' => 'vendor.pagination.bootstrap-4',
 
         'default_actions' => [
-            'edit' => [
+            [
                 'method' => 'GET',
                 'label' => 'Editar',
                 'icon-class' => 'fa fa-edit',
                 'btn-class' => 'btn btn-success btn-sm',
                 'model-route' => 'edit'
             ],
-            'delete' => [
+            [
                 'method' => 'DELETE',
                 'label' => 'Apagar',
                 'icon-class' => 'fa fa-times',
